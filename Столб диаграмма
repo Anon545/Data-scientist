@@ -16,4 +16,4 @@ games_released = pandas.Series([503, 588, 689, 697, 711, 658,
 
 seaborn.barplot(x=months, y=games_released)
 
-#вывод - столючатая диаграмма.
+#вывод - столбчатая диаграмма.

@@ -1,0 +1,36 @@
+# Построим последнюю тепловую карту и проанализируем среднее количество выданных промокодов.
+
+import pandas
+import seaborn
+data = pandas.read_csv('support_data.csv')
+segments_new = ['Потенциальные клиенты', 'Обычные клиенты', 'VIP-клиенты']
+intervals = ['До внедрения роботов', 'После внедрения роботов']
+
+# для каждой пары сегмент-интервал считаем сумму выданных промокодов
+# так как в столбце promo есть только значения 1 и 0, то сумма даст количество промокодов
+promo_sum = data.groupby(['segment', 'interval'])['promo'].sum()    
+# для каждой пары сегмент-интервал считаем количество записей
+promo_count = data.groupby(['segment', 'interval'])['promo'].count()
+
+# считаем среднее: делим сумму на количество
+mean_promo = promo_sum / promo_count
+print(mean_promo)
+
+# строим тепловую карту для количества промокодов
+# столбец mean_promo получился вложенным из-за группировки по двум столбцам,
+# поэтому его нужно «развернуть» методом unstack()
+seaborn.heatmap(mean_promo.unstack('interval'),
+                xticklabels=intervals,
+                yticklabels=segments_new,
+                annot=True,
+                cmap='RdYlGn')
+# Результат
+#segment    interval               
+#Segment 0  До внедрения роботов       0.043103
+#           После внедрения роботов    0.880694
+#Segment 1  До внедрения роботов       0.009893
+#           После внедрения роботов    0.014731
+#Segment 2  До внедрения роботов       1.000000
+#           После внедрения роботов    0.000000
+#Name: promo, dtype: float64
+# так же тепловая карта с файлом 4 - тепловая карта img
